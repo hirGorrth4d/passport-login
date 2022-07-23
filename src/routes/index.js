@@ -3,6 +3,22 @@ const express = require('express');
 const router = express.Router()
 const passport = require('passport');
 
+const infoProcess = {
+    args: process.argv.slice(2),
+    platform: process.platform,
+    node: process.version,
+    memory: JSON.stringify(process.memoryUsage.rss()),
+    exectPath: process.cwd(),
+    processID: process.pid,
+    path: process.argv[1]
+}
+
+router.get('/info', (req,res) => {
+    const data = infoProcess;
+    res.render('info', {data})
+})
+
+
 
 router.get('/', (req,res,next) => {
     res.render('index')

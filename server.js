@@ -1,14 +1,26 @@
 require('dotenv').config()
 const express = require('express');
 const engine = require('ejs-mate');
-const port = process.env.PORT || 8080
 const path = require('path');
 const router = require('./src/routes/index');
 const morgan = require('morgan');
 const passport = require('passport');
 const session = require('express-session');
 const flash = require('connect-flash');
+const minimist = require('minimist');
 
+//parametros
+const argObjects = {
+    alias : {
+        p: 'puerto'
+    },
+    default: {
+        p: 8080
+    }
+}
+const args = minimist(process.argv.slice(2), argObjects)
+
+const port = args.puerto
 //init
 const app = express()
 require('./src/database');
