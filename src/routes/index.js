@@ -7,7 +7,7 @@ const infoProcess = {
     args: process.argv.slice(2),
     platform: process.platform,
     node: process.version,
-    memory: JSON.stringify(process.memoryUsage.rss()),
+    memory: JSON.stringify(process.memoryUsage),
     exectPath: process.cwd(),
     processID: process.pid,
     path: process.argv[1]

@@ -10,7 +10,7 @@ const flash = require('connect-flash');
 const minimist = require('minimist');
 
 //parametros
-const argObjects = {
+/*const argObjects = {
     alias : {
         p: 'puerto'
     },
@@ -21,6 +21,8 @@ const argObjects = {
 const args = minimist(process.argv.slice(2), argObjects)
 
 const port = args.puerto
+*/
+const port = parseInt(process.argv[2]) || 8080
 //init
 const app = express()
 require('./src/database');
@@ -56,6 +58,11 @@ app.use((req,res,next)=> {
 app.use('/', router);
 
 
+app.get('/datos', (req,res) => {
+    console.log(`port: ${port} -> fyh ${Date.now()}`)
+    res.send(`Servidor express <span style="color:blueviolet;">(Nginx) </span> en ${port} - 
+    <b>PID ${process.pid}</b> - ${new Date().toLocaleString()}`)
+})
 
 
 
