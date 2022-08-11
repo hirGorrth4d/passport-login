@@ -8,23 +8,55 @@ const passport = require('passport');
 const session = require('express-session');
 const flash = require('connect-flash');
 const minimist = require('minimist');
-
+const { default: cluster } = require('cluster');
+const os = require('os');
+const db = require('./src/database');
+const routerRandom = require('./src/routes/random');
 //parametros
-/*const argObjects = {
+const numCPU = os.cpus().length;
+
+
+const argObjects = {
     alias : {
-        p: 'puerto'
+        p: 'puerto',
+        m: 'modo'
     },
     default: {
-        p: 8080
+        p: 8080,
+        m: 'FORK'
     }
 }
 const args = minimist(process.argv.slice(2), argObjects)
 
 const port = args.puerto
-*/
-const port = parseInt(process.argv[2]) || 8080
+const modoCluster = args.modo === 'CLUSTER'
+
+if (modoCluster && cluster.isPrimary) {
+    console.log('modo cluster');
+    for (let i= 0; i < numCPU; i++){
+        cluster.fork()
+    }
+    cluster.on('exit', (worker) => {
+        console.log(`worker ${worker.process.pid} exit at ${Date()}`)
+        cluster.fork();
+    })
+} else {
+    const app = express()
+    const init = async () => {
+        console.log('fork');
+        await db
+
+
+        app.listen(port, () => {
+            console.log(`Server running on port: ${port}`)
+        })
+    }
+    init()
+}
+
+
+
 //init
-const app = express()
 require('./src/database');
 require('./src/passport/local-auth');
 
@@ -56,6 +88,7 @@ app.use((req,res,next)=> {
 
 //routes
 app.use('/', router);
+app.use('/api', routerRandom)
 
 
 app.get('/datos', (req,res) => {
@@ -66,6 +99,3 @@ app.get('/datos', (req,res) => {
 
 
 
-app.listen(port, () => {
-    console.log(`Server running on port: ${port}`)
-})

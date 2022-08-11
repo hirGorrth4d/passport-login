@@ -1,7 +1,11 @@
 const express = require('express');
-
+const os = require('os');
 const router = express.Router()
 const passport = require('passport');
+
+const numCPU = os.cpus().length;
+
+
 
 const infoProcess = {
     args: process.argv.slice(2),
@@ -10,7 +14,8 @@ const infoProcess = {
     memory: JSON.stringify(process.memoryUsage),
     exectPath: process.cwd(),
     processID: process.pid,
-    path: process.argv[1]
+    path: process.argv[1],
+    cores: numCPU
 }
 
 router.get('/info', (req,res) => {

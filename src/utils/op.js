@@ -1,3 +1,9 @@
+const datos = {
+    puerto: process.argv.puerto,
+    proceso: process.pid
+}
+
+
 const calculo = (cant) => {
     const between = (min, max) => {
         return Math.floor(Math.random()* (max-min) + min);
@@ -29,5 +35,5 @@ process.on('message', (msg) => {
         const cant = msg
         sum = calculo(cant)
     }
-    process.send(sum)
+    process.send(datos)
 })
