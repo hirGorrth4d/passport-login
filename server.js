@@ -8,10 +8,14 @@ const passport = require('passport');
 const session = require('express-session');
 const flash = require('connect-flash');
 const minimist = require('minimist');
-// const { default: cluster } = require('cluster');
+const cluster  = require('cluster');
 const os = require('os');
 const db = require('./src/database');
 const routerRandom = require('./src/routes/random');
+const logger = require('./src/utils/loggers');
+
+
+
 //parametros
 const numCPU = os.cpus().length;
 
@@ -46,10 +50,6 @@ if (modoCluster && cluster.isPrimary) {
         console.log('fork');
         await db
 
-
-        app.listen(port, () => {
-            console.log(`Server running on port: ${port}`)
-        })
     }
     init()
 }
@@ -98,4 +98,12 @@ app.get('/datos', (req,res) => {
 })
 
 
+app.use((req,res) => {
+    res.status(404)
+    logger.warn('RUTA: /rutas inexistentes || METODO: get')
+})
 
+
+        app.listen(port, () => {
+            console.log(`Server running on port: ${port}`)
+        })
