@@ -8,13 +8,14 @@ const passport = require('passport');
 const session = require('express-session');
 const flash = require('connect-flash');
 const minimist = require('minimist');
-const { default: cluster } = require('cluster');
+// const { default: cluster } = require('cluster');
 const os = require('os');
 const db = require('./src/database');
 const routerRandom = require('./src/routes/random');
 //parametros
 const numCPU = os.cpus().length;
 
+const app = express()
 
 const argObjects = {
     alias : {
@@ -41,7 +42,6 @@ if (modoCluster && cluster.isPrimary) {
         cluster.fork();
     })
 } else {
-    const app = express()
     const init = async () => {
         console.log('fork');
         await db
